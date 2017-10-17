@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Genomes Exploration Tool</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Oxygen" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.13/css/dataTables.semanticui.min.css" media="screen" title="no title">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.7/semantic.css" media="screen" title="no title">
+    <link rel="stylesheet" href="styles/d3-tip.css" media="screen" title="no title">
+    <link rel="stylesheet" href="styles/nouislider.css" media="screen" title="no title">
+    <link rel="stylesheet" href="styles/master.css" media="screen" title="no title">
+
+
+</head>
+
+<body>
+
+
+    <div class="ui dimmer" id="page-loader">
+        <div class="ui massive text loader">Loading...</div>
+    </div>
+
+    <!-- HEADER --------------------------------------------------------------->
+
+    <div class="header">
+        <p class='header-text'>Genomes Exploration Tool</p>
+    </div>
+
+    <div class="controls">
+
+    </div>
+
+
+    <!-- MAIN PANEL ----------------------------------------------------------->
+    <center class="ui grid">
+
+        <!-- PLOTTING PANEL --------------------------------------------------->
+        <div class="twelve wide column" style="padding-right: 0px; height: 86vh;">
+
+              <!-- PLOT TYPE TAB MENU ----------------------------------------->
+              <div class="ui demo menu top attached" id="graph-tab" style="margin: 0px">
+                  <a class="active item text" data-tab="bar" style="font-weight: bold" data-content="Bar Chart showing number of genomes across hierarchical class." data-inverted="">Bar</a>
+                  <a class="item text" data-tab="box" style="font-weight: bold"  data-content="Box Chart showing range of a selected Vector across hierarchical class.">Box</a>
+                  <a class="item text" data-tab="histogram" style="font-weight: bold" data-content="Histogram showing distribution of Genomes in varying ranges of a attribute.">Histogram</a>
+                  <a class="item text" data-tab="scatter" style="font-weight: bold" data-content="Scatter plot to corelate two attributes of genomes.">Scatter</a>
+              </div>
+
+              <div class=" segment bottom attached" id='plot-area' style="height: 100%">
+                  <!-- BAR   --------------------------------------------->
+                  <div class="ui active tab" data-tab="bar" style="width: 90%; margin-top: 20px; margin-bottom: 20px">
+                      <div class="ui top menu" style="" >
+                          <div class="ui unchecked checkbox item">
+                            <input type="checkbox"  id="bar-sort" name="bar-sort">
+                            <label class="text" style="font-weight: bold">Sort</label>
+                          </div>
+                          <div class="ui checked checkbox item">
+                            <input type="checkbox" id="bar-zeros" name="bar-zeros">
+                            <label>Zeros</label>
+                          </div>
+                          <div class="ui item">
+                              <span class="text" style="font-weight: bold; margin-right: 15px">Y-axis</span>
+                              <div class="ui selection dropdown yaxis-select" id="bar-yaxis-select">
+                                  <i class="dropdown icon"></i>
+                                  <div class="text">Genome Size(MB)</div>
+                                  <div class="menu">
+                                      <div class="active selected item" data-value="Size(Mb)">Genome Size(MB)</div>
+                                      <div class="item" data-value="GC%">GC %</div>
+                                      <div class="item" data-value="Genes">Genes</div>
+                                      <div class="item" data-value="Proteins">Proteins</div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+
+                  <!-- BOX GRAPH AREA --------------------------------------------->
+                  <div class="ui tab" data-tab="box"  style="width: 90%; margin-top: 20px; margin-bottom: 20px">
+                      <div class="ui top menu" style="" >
+                          <div class="ui checkbox unchecked item">
+                            <input type="checkbox"  id="box-sort" name="box-sort">
+                            <label>Sort</label>
+                          </div>
+                          <div class="ui checked checkbox item">
+                            <input type="checkbox" id="box-zeros" name="box-zeros">
+                            <label>Zeros</label>
+                          </div>
+                          <div class="ui item">
+                              <span class="text" style="font-weight: bold; margin-right: 15px">Y-axis</span>
+                              <div class="ui selection dropdown yaxis-select" id="box-yaxis-select">
+                                  <i class="dropdown icon"></i>
+                                  <div class="text">Genome Size(MB)</div>
+                                  <div class="menu">
+                                      <div class="active selected item" data-value="Size(Mb)">Genome Size(MB)</div>
+                                      <div class="item" data-value="GC%">GC %</div>
+                                      <div class="item" data-value="Genes">Genes</div>
+                                      <div class="item" data-value="Proteins">Proteins</div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+
+                  <!-- HISTOGRAM GRAPH AREA --------------------------------------->
+                  <div class="ui tab" data-tab="histogram" style="width: 90%; margin-top: 20px; margin-bottom: 20px">
+                      <div class="ui top menu" style="" >
+                          <div class="ui checked checkbox item">
+                            <input type="checkbox" id="hist-zeros" name="hist-zeros">
+                            <label>Zeros</label>
+                          </div>
+                          <div class="ui input item">
+                              <label for="histogram-bins" style="font-weight: bold; margin-right: 15px">Bins: </label>
+                              <input id="histogram-bins" type="number" min="1" value="10" >
+                          </div>
+                          <div class="ui input item">
+                              <label for="histogram-thresholds" style="font-weight: bold; margin-right: 15px">Thresholds: </label>
+                              <input id="histogram-thresholds" type="text" placeholder="' , ' separated values.." >
+                          </div>
+                          <div class="ui item">
+                              <span class="text" style="font-weight: bold; margin-right: 15px">Attribute:</span>
+                              <div class="ui selection dropdown yaxis-select" id="histogram-yaxis-select">
+                                  <i class="dropdown icon"></i>
+                                  <div class="text">Genome Size(MB)</div>
+                                  <div class="menu">
+                                      <div class="active selected item" data-value="Size(Mb)">Genome Size(MB)</div>
+                                      <div class="item" data-value="GC%">GC %</div>
+                                      <div class="item" data-value="Genes">Genes</div>
+                                      <div class="item" data-value="Proteins">Proteins</div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+
+                  <!-- SCATTER GRAPH AREA ----------------------------------------->
+                  <div class="ui tab" data-tab="scatter" style="width: 90%; margin-top: 20px; margin-bottom: 20px">
+                      <div class="ui top menu" style="" >
+                          <div class="ui item">
+                              <span class="text" style="font-weight: bold; margin-right: 15px">X-axis:</span>
+                              <div class="ui selection dropdown xaxis-select" id="scatter-xaxis-select">
+                                  <i class="dropdown icon"></i>
+                                  <div class="text">GC%</div>
+                                  <div class="menu">
+                                      <div class="item" data-value="Size(Mb)">Genome Size(MB)</div>
+                                      <div class="active selected item" data-value="GC%">GC %</div>
+                                      <div class="item" data-value="Genes">Genes</div>
+                                      <div class="item" data-value="Proteins">Proteins</div>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="ui item">
+                              <span class="text" style="font-weight: bold; margin-right: 15px">Y-axis:</span>
+                              <div class="ui selection dropdown yaxis-select" id="scatter-yaxis-select">
+                                  <i class="dropdown icon"></i>
+                                  <div class="text">Genome Size(MB)</div>
+                                  <div class="menu">
+                                      <div class="active selected item" data-value="Size(Mb)">Genome Size(MB)</div>
+                                      <div class="item" data-value="GC%">GC %</div>
+                                      <div class="item" data-value="Genes">Genes</div>
+                                      <div class="item" data-value="Proteins">Proteins</div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+
+                  <div id="graph-area" style="width: 96%">
+                      <svg width="100%" height="100%" id="graph-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"></svg>
+                  </div>
+            </div>
+
+        </div>
+
+
+        <div class="four wide column" style="padding-left: 0px !important; height: 90vh; width: 100%">
+
+
+            <div class="ui pointing demo menu top attached" id="controls-tab" style="margin: 0px">
+
+              <a class="active item" data-tab="selection-tab" data-content="Selection of Hierarchical class.">
+                  <i style="margin: 0px" class="cubes icon"></i>
+              </a>
+
+              <a class="item" data-tab="filter-tab" data-content="Filters Panel">
+                  <i style="margin: 0px" class="filter icon"></i>
+              </a>
+
+              <a class="item" data-tab="legend-tab" data-content="Legend Panel">
+                  <i style="margin: 0px" class="list layout icon"></i>
+              </a>
+
+            </div>
+
+            <!-- SELECTION TAB ------------------------------------------------>
+            <div class="ui active tab segment bottom attached" data-tab="selection-tab" style="width: 100%; height: 100%">
+
+                <div class="ui search" id="selection-search" style="margin-top: 40px; margin-bottom: 30px" data-content="Search for Kingdom, Group, SubGroup or Organism." data-position="top center">
+                    <div class="ui icon input">
+                        <input class="prompt" type="text" placeholder="Search">
+                        <i class="search icon"></i>
+                    </div>
+                    <div class="results"></div>
+                </div>
+
+
+                <div class="text" style="font-weight: bold; margin: 15px; text-align: -webkit-left; font-size: 16px">Kingdom</div>
+                <div class="ui selection dropdown row" id="kingdom-select" style="align: left; width: 90%">
+                    <i class="dropdown icon"></i>
+                    <div class="text">All Kingdoms</div>
+                    <div class="menu">
+                        <div class="active selected item" data-value="all">All Kingdoms</div>
+                        <div class="item" data-value="Archaea">Archaea</div>
+                        <div class="item" data-value="Bacteria">Bacteria</div>
+                        <div class="item" data-value="Eukaryota">Eukaryota</div>
+                        <div class="item" data-value="Viruses">Viruses</div>
+                        <div class="item" data-value="Viroids">Viroids</div>
+                    </div>
+                </div>
+
+                <div class="text" style="font-weight: bold; margin: 15px; text-align: -webkit-left; font-size: 16px; padding-top: 15px">Group</div>
+                <div class="ui selection dropdown row" id="group-select" style="align: left; width: 90%">
+                    <i class="dropdown icon"></i>
+                    <div class="text">All Groups</div>
+                    <div class="menu">
+                        <div class="active selected item" data-value="all">All Groups</div>
+                    </div>
+                </div>
+
+                <div class="text" style="font-weight: bold; margin: 15px; text-align: -webkit-left; font-size: 16px; padding-top: 15px">Sub Group</div>
+                <div class="ui selection dropdown row" id="subgroup-select" style="align: left; width: 90%">
+                    <i class="dropdown icon"></i>
+                    <div class="text">All SubGroups</div>
+                    <div class="menu">
+                        <div class="active selected item" data-value="all">All SubGroups</div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- FILTERS TAB -------------------------------------------------->
+            <div  class="ui tab segment bottom attached" data-tab="filter-tab" style="width: 100%; height: 100%">
+                <div class="filter" style="width: 90%" >
+                    <div class="text" style="font-weight: bold; margin: 15px; padding-bottom: 10px">Genome Size (MB)</div>
+                    <div class='slider' id="size-slider" style="width: 80%; margin-top: 40px; margin-bottom: 30px"></div>
+                    <hr style="opacity: 0.5; width: 80%">
+                </div>
+                <div class="filter" style="width: 90%" >
+                    <div class="text" style="font-weight: bold; margin: 15px; padding-bottom: 10px">GC%</div>
+                    <div class='slider' id="gc-slider" style="width: 80%; margin-top: 40px; margin-bottom: 30px"></div>
+                    <hr style="opacity: 0.5; width: 80%">
+                </div>
+                <div class="filter" style="width: 90%" >
+                    <div class="text" style="font-weight: bold; margin: 15px; padding-bottom: 10px">Gene Number</div>
+                    <div class='slider'  id="gene-slider" style="width: 80%; margin-top: 40px; margin-bottom: 30px"></div>
+                    <hr style="opacity: 0.5; width: 80%">
+                </div>
+                <div class="filter" style="width: 90%" >
+                    <div class="text" style="font-weight: bold; margin: 15px; padding-bottom: 10px">Protein Number</div>
+                    <div class='slider'  id="protein-slider" style="width: 80%; margin-top: 40px; margin-bottom: 30px"></div>
+                </div>
+
+                <button class="ui primary button" id="reset-filters">Reset Filters</button>
+          </div>
+
+          <!-- LEGEND TAB ----------------------------------------------------->
+          <div class="ui tab segment bottom attached" data-tab="legend-tab" style="width: 100%; height: 100%; font-size: 12px; overflow-y: scroll; overflow-x: hidden">
+             <div class="ui positive button" id="show-table" data-content="Show table of data plotted." style="margin: 20px">Show Data table</div>
+
+
+             <table class="ui celled padded table" id="legend-table">
+               <thead>
+                 <tr>
+                 <th class="single line">Toggle</th>
+                 <th id="legend-head">Kingdom</th>
+                 </tr>
+              </thead>
+               <tbody>
+                   <!-- Elements appended dynamically -->
+               </tbody>
+             </table>
+
+          </div>
+        </div>
+
+        <div class="ui modal" id="table-modal" style="width: 95vw">
+            <!-- <i class='ui icon remove right floated' id='closeModal' style="position: absolute; top: 2px; right: 0px; font-size: 20px"></i> -->
+
+            <div style="height: 94vh">
+                <div style="height: 10px"></div>
+
+
+                <div class="ui menu" style="width: 96%; margin-left: 2%">
+                    <div class="ui item unchecked checkbox">
+                      <input type="checkbox"  id="current" name="current">
+                      <label class="text" style="font-weight: bold">Show filtered data</label>
+                    </div>
+                </div>
+
+                <div>
+                    <table class="ui celled padded table" id="data-table">
+                      <thead id="data-head">
+                        <tr>
+                        <th class="single line">Organism</th>
+                        <th class="single line">Kingdom</th>
+                        <th class="single line">Group</th>
+                        <th class="single line">SubGroup</th>
+                        <th class="single line">Size(MB)</th>
+                        <th class="single line">GC%</th>
+                        <th class="single line">Genes</th>
+                        <th class="single line">Proteins</th>
+                        </tr>
+                     </thead>
+                      <tbody>
+                          <!-- Elements appended dynamically -->
+                      </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </center>
+
+    <!-- Scritps Go HERE!! -->
+    <!-- <script src="scripts/leaves.js"></script> -->
+    <!-- <script src="scripts/tree_structure.js"></script> -->
+    <script src="scripts/underscore/underscore.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="scripts/d3-tip.js"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.13/js/dataTables.semanticui.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.7/semantic.js"></script>
+    <script src="scripts/nouislider.js"></script>
+    <script src="scripts/colorbrewer.js" charset="utf-8"></script>
+
+    <script src="data/autocomplete_all.js"></script>
+    <script src="scripts/utilis.js"></script>
+    <script src="scripts/chartUtilis.js"></script>
+    <script src="scripts/input.js"></script>
+    <script src="scripts/filters.js"></script>
+    <script src="scripts/legend.js"></script>
+
+
+    <script src="scripts/barChart.js"></script>
+    <script src="scripts/boxChart.js"></script>
+    <script src="scripts/histChart.js"></script>
+    <script src="scripts/scatterChart.js"></script>
+
+
+
+    <!-- <script src="scripts/boxChart.js"></script> -->
+</body>
+
+</html>

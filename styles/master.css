@@ -1,0 +1,155 @@
+
+body {
+  font-family: Oxygen, sans-serif;;
+}
+
+/* ---------- Responsive Font with Minimum font-size ---------- */
+* {
+  /* Typography */
+  --main-font: 'Slabo 25px', serif;
+
+  /* Calculation */
+  --responsive: calc((var(--min-font) * 1px) + (var(--max-font) - var(--min-font)) * ((100vw - 420px) / (1200 - 420))); /* Ranges from 421px to 1199px */
+}
+
+/* -- Graph area Styling ---------------------------------------------------- */
+#graph-area {
+  position: absolute;
+}
+
+/* -- Header styling -------------------------------------------------------- */
+.header > .header-text {
+  --max-font: 20;
+  --min-font: 14;
+  font-size: var(--responsive);
+  font-weight: bold;
+  padding-top: 2vh;
+  padding-bottom: 2vh;
+  padding-left: 2vw;
+  margin: 0px;
+}
+
+.text {
+    --max-font: 12;
+    --min-font: 10;
+    font-size: var(--responsive);
+}
+
+/* -- Control Panel Styling ---------- */
+.controls{
+  border-right: 2px;
+}
+
+.results.transition.visible {
+    position: relative !important;
+    max-height: 200px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+/*-- Styling input tooltips ------------------*/
+.tooltip-input{
+    width: 75px;
+    padding: 2px;
+    border: none;
+
+}
+
+.toggle-cell{
+    width: 30px;
+}
+
+.noUi-connect {
+  background-color: black;
+}
+
+.ui.popup {
+    font-size: 12px;
+    color: white;
+    background-color: black;
+    border: black;
+    opacity: 0.9;
+}
+
+.popup::before {
+    color: black;
+    background-color: black !important;
+    border: black;
+}
+
+.row.dt-table {
+    height: 70vh !important;
+    overflow-y: scroll !important;
+    overflow-x: hidden !important;
+}
+
+.content > .description {
+    display: inline !important;
+    font-size: 10px !important;
+    /*margin-left: 4px;*/
+}
+
+.ui.grid{
+    margin-left: 2%;
+    width: 96% !important;
+}
+
+#closeModal:hover{
+    cursor: hand;
+    cursor: pointer;
+    color: #545454;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ul {
+    list-style-type: none;
+}
+
+.leaf {
+    margin-top: 5px;
+    display: table;
+    padding: 0px 10px;
+    padding-right: 13px;
+    height: 25px;
+    background-color: #eeeeee;
+    color: black;
+    border-radius: 12.5px;
+}
+
+.leaf:hover {
+    cursor: hand;
+    cursor: pointer;
+}
+
+.leaf>p {
+    margin: 0px;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 15px;
+    display: inline;
+}
+
+.leaf>span {
+    color: #1565C0;
+    padding-top: 5px;
+    padding-right: 5px;
+}
+
+.tick{
+  color: black !important;
+}
